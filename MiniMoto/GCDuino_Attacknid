@@ -1,0 +1,63 @@
+#define M1_Speed  6   //Speed
+#define M1_Dir  7   //Direction
+#define M2_Speed 5   //Speed
+#define M2_Dir 4   //Direction
+#define trigPin 13  //Ultrasonic transducer
+#define echoPin 12 //Ultrasonic transducer
+#define LED 9   //Onboard LED
+#define Piezo 10  //Speaker
+
+  
+void setup()
+{
+  //Serial.begin (9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(M1_Speed, OUTPUT);
+  pinMode(M1_Dir, OUTPUT);
+  pinMode(M2_Speed, OUTPUT);
+  pinMode(M2_Dir, OUTPUT); 
+  pinMode(LED, OUTPUT);
+  pinMode(Piezo, OUTPUT);
+  digitalWrite(LED, LOW);
+  digitalWrite(M1_Dir, HIGH);
+  digitalWrite(M2_Dir, HIGH);
+}
+
+void loop()
+{
+    long duration, distance;
+    digitalWrite(trigPin, LOW);  // Added this line
+    delayMicroseconds(2); // Added this line
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10); // Added this line
+    digitalWrite(trigPin, LOW);
+    duration = pulseIn(echoPin, HIGH);
+    
+    if (duration < 1000) {  // This is where the collision avoidance happens
+      digitalWrite(LED, HIGH);
+      analogWrite(M1_Speed, 0); // Forward motion OFF
+      analogWrite(M2_Speed, 250); // Rotate motion ON
+      analogWrite(Piezo, 30);      // Almost any value can be used except 0 and 255
+      delay(100);          // wait for a delayms ms
+      analogWrite(Piezo, 80);       // 0 turns it off
+      delay(100);          // wait for a delayms ms 
+      analogWrite(Piezo, 250);      // Almost any value can be used except 0 and 255
+      delay(100);          // wait for a delayms ms
+      analogWrite(Piezo, 80);      // Almost any value can be used except 0 and 255
+      delay(100);          // wait for a delayms ms
+      analogWrite(Piezo, 30);      // Almost any value can be used except 0 and 255
+      delay(100);          // wait for a delayms ms
+      analogWrite(Piezo, 0);       // 0 turns it off
+      delay(100);          // wait for a delayms ms 
+    }
+    else {
+      digitalWrite(LED, LOW); // 
+      analogWrite(M1_Speed, 250); // Forward motion ON
+      analogWrite(M2_Speed, 0); // Rotate motion OFF
+    }
+  //Serial.print(duration);
+  //Serial.println();
+  delay(200);
+  
+}
